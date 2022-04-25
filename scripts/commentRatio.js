@@ -76,6 +76,8 @@ function commentRatio(codeFile, codeSamples, configs) {
       // console.log(sampleStartLine, sampleEndLine, configStartLine, configEndLine);
       // console.log(sampleStartColumn, sampleEndColumn, configStartColumn, configEndColumn);
 
+      console.log(lines);
+
       for (let i = 1; i <= numberOfLines; i++) {
         if (
           i >= configStartLine &&
@@ -94,20 +96,26 @@ function commentRatio(codeFile, codeSamples, configs) {
             if (overlap > 0) overlapLength += overlap;
           } else if (i == configStartLine && i == sampleStartLine) {
             let start = Math.max(configStartColumn, sampleStartColumn);
-            overlapLength += lines[i].substring(start, -1).length;
+            overlapLength += lines[i - 1].substring(start, -1).length;
           } else if (i == configEndLine && i == sampleEndLine) {
             let end = Math.min(configEndColumn, sampleEndColumn);
-            overlapLength += lines[i].substring(0, end).length;
+            overlapLength += lines[i - 1].substring(0, end).length;
           } else if (i == configStartLine && i > sampleStartLine) {
-            overlapLength += lines[i].substring(configStartColumn, -1).length;
+            overlapLength += lines[i - 1].substring(
+              configStartColumn,
+              -1
+            ).length;
           } else if (i == sampleStartLine && i > configStartLine) {
-            overlapLength += lines[i].substring(sampleStartColumn, -1).length;
+            overlapLength += lines[i - 1].substring(
+              sampleStartColumn,
+              -1
+            ).length;
           } else if (i == configEndLine && i < sampleEndLine) {
-            overlapLength += lines[i].substring(0, configEndColumn).length;
+            overlapLength += lines[i - 1].substring(0, configEndColumn).length;
           } else if (i == sampleEndLine && i < configEndLine) {
-            overlapLength += lines[i].substring(0, sampleEndColumn).length;
+            overlapLength += lines[i - 1].substring(0, sampleEndColumn).length;
           } else {
-            overlapLength += lines[i].length;
+            overlapLength += lines[i - 1].length;
           }
         }
       }
@@ -132,24 +140,24 @@ function commentRatio(codeFile, codeSamples, configs) {
 // codeFile = ``;
 // codeSamples = "";
 // configs = "";
-
+//
 // (async () => {
 //   lines = fs.readFileSync("./testing/codeFile.txt", "utf8");
 //   codeFile = lines.toString();
 // })();
-
+//
 // (async () => {
 //   lines = fs.readFileSync("./testing/codeSamples.json");
 //   codeSamples = JSON.parse(lines);
 //   //codeSamples = lines.toString();
 // })();
-
+//
 // (async () => {
 //   lines = fs.readFileSync("./testing/configs.json");
 //   configs = JSON.parse(lines);
 //   //configs = lines.toString();
 // })();
-
+//
 // var commentRatios = commentRatio(codeFile, codeSamples, configs);
 // console.log(commentRatios);
 module.exports = { commentRatio };

@@ -86,10 +86,10 @@ app.post("/suggest_comments", (req, res) => {
     let normalizedCommentRatio = commentRatios[i] / MAX_COMMENT_RATIO;
     let normalizedRumMetric = allBlocksRum[i] / MAX_RUM_SCORE;
     var graspScore = (10 * normalizedCommentRatio) / normalizedRumMetric;
-    suggestionsOutput.append(graspScore);
+    suggestionsOutput.push(graspScore);
   }
 
-  res.send("Recieved : ", allBlocks, suggestionsOutput);
+  res.send({ allBlocks, suggestionsOutput });
 });
 
 app.get("/metrics", (req, res) => {
