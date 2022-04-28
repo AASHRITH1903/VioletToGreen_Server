@@ -1,6 +1,11 @@
 const { parse } = require("java-parser");
 
+/**
+ *
+ */
+
 class CodeSampler {
+  // Different types of blocks in the java code
   methods;
   classes;
   interfaces;
@@ -29,6 +34,16 @@ class CodeSampler {
     this.caseBlocks = [];
   }
 
+  /**
+   *
+   * @param {String} javaText [The java text for which code sampling need to be done]
+   * @returns [Array(2): all blocks and corresponding types]
+   *
+   * This method constructs a CST (Concrete Syntax tree) and traverses (BFS) the tree to get
+   * various blocks in the code. Each node is a syntactic element in the code, so
+   * relevant blocks are extracted using the "name" attribute of the node which indicates
+   * the type of the node.
+   */
   getBlocks = (javaText) => {
     const cst = parse(javaText);
 
@@ -39,16 +54,6 @@ class CodeSampler {
     while (q.length > 0) {
       let s = q.shift();
       curl--;
-
-      // process.stdout.write(`${s.name},`);
-
-      // if (s.location?.startLine === 95 && s.location?.endLine === 99) {
-      //   console.log(`${s.name}`, s.location);
-      // }
-
-      // if (s.location?.startLine >= 38 && s.location?.endLine <= 41) {
-      //   console.log(`${s.name}`, s.location);
-      // }
 
       switch (s.name) {
         case "constructorDeclaration":
@@ -170,7 +175,7 @@ class CodeSampler {
     // console.log(this.switchStatements);
     // console.log(this.methods);
 
-    // Merge all the blocks ---------------------------------
+    // Merge all the blocks and return all_blocks ---------------------------------
 
     var all_blocks = [];
     var all_blocks_types = [];
@@ -242,6 +247,14 @@ class CodeSampler {
     return [all_blocks, all_blocks_types];
   };
 
+  /**
+   *
+   * @param {Array} innerArray [Array of blocks that need to be removed if found
+   *                            inside one of the blocks in outerArray]
+   * @param {Array} outerArray [Array of blocks to check if the block overlaps a
+   *                             block in innerArray  ]
+   * @returns [innerArray after removing blocks which are nested.]
+   */
   removeNested = (innerArray, outerArray) => {
     var temp = [];
     var flag = false;
