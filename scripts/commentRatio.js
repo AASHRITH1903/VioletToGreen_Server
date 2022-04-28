@@ -1,30 +1,25 @@
 const fs = require("fs");
 
+/**
+ * 
+ * @param {The entire java code file that has been sent from the client} codeFile 
+ * @param {The sample code snippets the are output from the codeSampler module using java parser} codeSamples 
+ * @param {The linked pairs of comments and code, also sent from the client} configs 
+ * @returns 
+ */
+
 function commentRatio(codeFile, codeSamples, configs) {
   const singleLinedComments = /[/]{2}.*(?:(?:\r\n|\r|\n) *[/].*)*/gm;
   const multilinedComment = /\/\*[\s\S]*?\*\//gm;
   var lines = codeFile.split("\n");
   var numberOfLines = lines.length;
   var commentCodeRatios = [];
-  /* console.log(codeFile);
-  console.log(codeSamples);
-  console.log(configs); */
-
-  /* console.log(typeof codeFile);
-  console.log(typeof codeSamples);
-  console.log(typeof configs); */
 
   //1. for each code sample,
   // extract the inline comments
   // search configs for an exact match
   // find over lap and extract those with more than 70% match
   // for each code sample, return the comment to code ratio
-
-  /* codeLines = codeFile.split('\n');
-  for (var codeLine of codeLines) {
-    console.log(codeLine); 
-    console.log('--------------------');
-  } */
 
   for (var codeSample of codeSamples) {
     //console.log(codeSample);
@@ -76,7 +71,10 @@ function commentRatio(codeFile, codeSamples, configs) {
       // console.log(sampleStartLine, sampleEndLine, configStartLine, configEndLine);
       // console.log(sampleStartColumn, sampleEndColumn, configStartColumn, configEndColumn);
 
-      console.log(lines);
+      //console.log(lines);
+
+      // For each code sample, try to identify the maximum overlap with code smaples given in configs
+      // The overlop is used to determine if the comment is linked to that particular code sample
 
       for (let i = 1; i <= numberOfLines; i++) {
         if (
@@ -121,6 +119,7 @@ function commentRatio(codeFile, codeSamples, configs) {
       }
 
       //console.log("overlap length found", overlapLength);
+      // The overlap threshold is now set at 0.7
       let overlapScore = overlapLength / overlapDenominator;
       if (overlapScore >= 0.7) {
         //console.log("overlap found", overlapScore);
@@ -128,8 +127,8 @@ function commentRatio(codeFile, codeSamples, configs) {
       }
       //console.log("--------------------------------");
     }
-    // console.log("new comment length", commentLength);
-    // console.log("code length", codeLength);
+
+    // We return the comment to code ratios for each of the samples in an array
     let commentCodeRatio = commentLength / codeLength;
     commentCodeRatios.push(commentCodeRatio);
     //console.log("--------------------");
@@ -137,6 +136,7 @@ function commentRatio(codeFile, codeSamples, configs) {
   return commentCodeRatios;
 }
 
+// The following code is for unit testing
 // codeFile = ``;
 // codeSamples = "";
 // configs = "";
