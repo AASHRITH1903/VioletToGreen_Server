@@ -14,17 +14,30 @@ app.get("/", (req, res) => {
 const javaCode =
   "public class BubbleSortExample { static void bubbleSort(int[] arr) {  int n = arr.length; int temp = 0;  for(int i=0; i < n; i++){  for(int j=1; j < (n-i); j++){  if(arr[j-1] > arr[j]){  temp = arr[j-1];  arr[j-1] = arr[j];  arr[j] = temp;}}}}}";
 
+/**
+ *  This route is used to get suggestions on where to insert comments
+ *  body = {code : "......", configs : [ [{},{}], [{},{}], ...] }
+ *  @code : Java text from the active editor window sent to the server
+ *  @configs : Arrays of config elements (links), each link is an array
+ *  of length 2, the first object contains the info about code part of
+ *  the link and the second object contains the info about comment part
+ *  of the link
+ */
 app.post("/suggest_comments", (req, res) => {
   console.log(req.body);
 
   const code = req.body.code;
   const configs = req.body.configs;
 
-  // console.log(CodeSampler);
   var codeSampler = new CodeSampler();
 
+  // allBlocks contains the line numbers of each block
+  // allBlocksTypes contains the types of the corresponding block
+  // Block types : class, method, other
   const [allBlocks, allBlocksTypes] = codeSampler.getBlocks(code);
 
+  // allBlocksRum contains the "rum" metric for each of the
+  // corresponding blocks
   var allBlocksRum = [];
 
   for (var i = 0; i < allBlocks.length; i++) {
@@ -34,8 +47,6 @@ app.post("/suggest_comments", (req, res) => {
     const codeSample = code.substring(block.startOffset, block.endOffset + 1);
 
     const rum_metric = calculateRum(codeSample, blockType);
-
-    // console.log(codeSample, rum_metric);
 
     allBlocksRum.push(rum_metric);
   }
